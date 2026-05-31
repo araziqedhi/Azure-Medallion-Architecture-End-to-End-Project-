@@ -1,0 +1,17 @@
+{
+	"name": "External_resources",
+	"properties": {
+		"content": {
+			"query": "-- Step 1 \nCREATE MASTER KEY ENCRYPTION BY PASSWORD = 'raziqUmfassungsweg9';\n-- Step 2 \nCREATE DATABASE SCOPED CREDENTIAL GoldCredential\nWITH IDENTITY = 'Managed Identity';\n-- Step 3\nCREATE EXTERNAL DATA SOURCE GoldLayer\nWITH (\n    LOCATION = 'abfss://gold@<storageaccountraziq>.dfs.core.windows.net/',\n    CREDENTIAL = GoldCredential\n);\n-- Step 4 \nCREATE EXTERNAL FILE FORMAT DeltaFormat\nWITH (FORMAT_TYPE = DELTA);\n-- Step 5\nCREATE SCHEMA sales_schema;\n-- Step 6\nCREATE EXTERNAL TABLE sales_schema.sales\n(\n    Outlet_Establishment_Year  NVARCHAR(100),\n    Outlet_Location_Type    NVARCHAR(100),\n    [round(sum(Item_Outlet_Sales) AS total_sales, 2)]   INT\n)\nWITH (\n    LOCATION     = 'sales/',\n    DATA_SOURCE  = GoldLayer,\n    FILE_FORMAT  = DeltaFormat\n);\n-- Step 7 \n-- Create User Credentials \n-- Register user at server level\nUSE sales_db;\n\n-- Register the group at server level\nCREATE LOGIN [Gold Layer Users] FROM EXTERNAL PROVIDER;\n\n-- Map group into GoldDB\nCREATE USER [Gold Layer Users] FOR LOGIN [Gold Layer Users];\n\n-- Grant read access to all gold tables\nGRANT SELECT ON SCHEMA::sales_schema TO [Gold Layer Users];\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sales_db",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

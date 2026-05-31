@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 2",
+	"properties": {
+		"content": {
+			"query": "USE sales_db;\n\nCREATE EXTERNAL TABLE sales_schema.sales\n(\n       [Outlet_Establishment_Year] VARCHAR(100)\n,[Outlet_Location_Type] VARCHAR(100)\n,[round(sum(Item_Outlet_Sales) AS total_sales, 2)] int\n)\nWITH (\n    LOCATION    = 'github/data/',\n    DATA_SOURCE = GoldLayer,\n    FILE_FORMAT = DeltaFormat\n);",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sales_db",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
